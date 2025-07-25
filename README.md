@@ -81,6 +81,7 @@ systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
 
 # Create a folder and install
 mkdir actions-runner && cd actions-runner
+# Verifique a versão mais recente: https://github.com/actions/runner/releases
 curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-linux-x64-2.326.0.tar.gz
 tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
 
@@ -107,6 +108,7 @@ sudo systemctl start amazon-ssm-agent
 mkdir actions-runner && cd actions-runner
 
 # Baixa o runner (ajuste a versão conforme necessário)
+# Verifique a versão mais recente: https://github.com/actions/runner/releases
 curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-linux-x64-2.326.0.tar.gz
 
 # Extrai o conteúdo
