@@ -22,6 +22,7 @@ Este documento descreve os passos necessários para preparar uma instância EC2 
 
 Execute os comandos abaixo na instância EC2:
 
+Debian/Ubuntu (original):
 ```bash
 # Atualiza o sistema e instala dependências
 sudo apt-get update -y
@@ -43,9 +44,31 @@ terraform -install-autocomplete
 terraform -version
 ```
 
+CentOS 7/8 ou Amazon LInux2:
+```bash
+# Atualiza o sistema
+sudo yum update -y
+
+# Instala dependências
+sudo yum install -y yum-utils curl unzip gnupg
+
+# Adiciona o repositório da HashiCorp
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+
+# Instala o Terraform
+sudo yum install -y terraform
+
+# Autocomplete (opcional, pode variar dependendo da shell)
+terraform -install-autocomplete
+
+# Verifica a versão
+terraform -version
+```
+
 # 🤖 Instalação e Configuração do Agente do GitHub Actions
 Execute o script abaixo na instância EC2 para configurar o agente:
 
+Debian/Ubuntu (original):
 ```bash
 #!/bin/bash
 # ubuntu image
@@ -63,6 +86,36 @@ tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
 
 # Create the runner and start the configuration experience
 ./config.sh --url https://github.com/gft-laboratory/modules-consumer --token AEBICIZ2B5FHOADXKOV5VELIOAT66
+nohup ./run.sh > log.txt 2>&1 &
+```
+
+CentOS 7/8 ou Amazon Linux 2
+```bash
+#!/bin/bash
+# Amazon Linux 2 ou CentOS 7/8
+
+# Atualiza pacotes e instala dependências
+sudo yum update -y
+sudo yum install -y curl tar unzip
+
+# Instala o Amazon SSM Agent (caso ainda não esteja presente)
+sudo yum install -y amazon-ssm-agent
+sudo systemctl enable amazon-ssm-agent
+sudo systemctl start amazon-ssm-agent
+
+# Cria o diretório do GitHub Actions Runner
+mkdir actions-runner && cd actions-runner
+
+# Baixa o runner (ajuste a versão conforme necessário)
+curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-linux-x64-2.326.0.tar.gz
+
+# Extrai o conteúdo
+tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
+
+# Executa a configuração do runner (substitua o token conforme necessário)
+./config.sh --url https://github.com/gft-laboratory/modules-consumer --token AEBICIZ2B5FHOADXKOV5VELIOAT66
+
+# Inicia o runner em segundo plano
 nohup ./run.sh > log.txt 2>&1 &
 ```
 
