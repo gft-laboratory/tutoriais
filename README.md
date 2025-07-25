@@ -10,9 +10,9 @@ Este documento descreve os passos necessários para preparar uma instância EC2 
 
 | Requisito                | Valor                                                                 |
 |--------------------------|-----------------------------------------------------------------------|
-| Sistema Operacional      | Ubuntu Linux 24.04                                                    |
+| Sistema Operacional      | Ubuntu Linux 24.04 ou Amazon Linux 2                                  |
 | Tipo da Instância EC2    | `t2.medium`                                                           |
-| AMI                      | `ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250610` |
+| AMI                      | `ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250610` ou amazon-linux-2-latest-amd64 (ou ID: ami-0c55b159cbfafe1f0 na região us-east-1, ajustar conforme a região) |
 | IAM Role (Instance Profile) | `instance-profile-agent` (com permissões para EC2, RDS, IAM Role e Policy) |
 | Security Group           | Portas `80` e `443` liberadas para `0.0.0.0/0`                         |
 
