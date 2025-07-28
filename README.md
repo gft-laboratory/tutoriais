@@ -123,7 +123,7 @@ nohup ./run.sh > log.txt 2>&1 &
 O token fornecido expira rapidamente. A configuração deve ser realizada em tempo real (4 mãos).
 
 
-### Tornando o ./run.sh auto-executável
+### Amazon Linux 2 ou CentOS 7/8 - Tornando o ./run.sh auto-executável
 ```hcl
 sudo vi /etc/systemd/system/myagent.service
 ```
