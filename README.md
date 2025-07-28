@@ -120,8 +120,55 @@ tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
 # Inicia o runner em segundo plano
 nohup ./run.sh > log.txt 2>&1 &
 ```
-
 O token fornecido expira rapidamente. A configuração deve ser realizada em tempo real (4 mãos).
+
+
+### Tornando o ./run.sh auto-executável
+```hcl
+sudo vi /etc/systemd/system/myagent.service
+```
+
+Adicione o seguinte conteúdo no arquivo .service:
+```hcl
+[Unit]
+Description=GitHub Actions Runner Script
+After=network.target
+
+[Service]
+Type=simple
+User=ssm-user
+WorkingDirectory=/home/ssm-user/actions-runner
+ExecStart=/usr/bin/nohup /home/ssm-user/actions-runner/run.sh
+Restart=always
+StandardOutput=append:/home/ssm-user/actions-runner/log.txt
+StandardError=append:/home/ssm-user/actions-runner/log.txt
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Ativando o serviço e testando
+```hcl
+sudo systemctl daemon-reexec           # Reinicia systemd se necessário
+sudo systemctl daemon-reload           # Carrega novo serviço
+sudo systemctl enable myagent.service  # Ativa para iniciar com o sistema
+sudo systemctl start myagent.service   # Inicia agora
+systemctl status myagent.service
+```
+
+
+
+
+# Troubleshooting
+## Amazon Linux 2 ou CentOS 7/8 - Erro por falta do pacote SDK
+
+```hcl
+sudo yum update -y
+sudo yum install -y wget yum-utils
+sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+sudo yum install -y dotnet-sdk-6.0
+dotnet --version
+```
 
 # ✅ Finalização
 Após seguir os passos acima, sua instância EC2 estará pronta para executar pipelines do GitHub Actions com Terraform.
