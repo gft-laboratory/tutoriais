@@ -170,5 +170,56 @@ sudo yum install -y dotnet-sdk-6.0
 dotnet --version
 ```
 
+## Amazon Linux 2 ou CentOS 7/8 - Erro de curl: (7) Failed to connect to 169.254.169.254 port 80 after 0 ms: Could not connect to server
+
+Se ao configurar uma pipeline, e o comando `terraform init`estiver emitindo o seguinte erro abaixo:
+```hcl
+Run terraform init -upgrade
+
+Initializing the backend...
+Upgrading modules...
+Downloading git::https://github.com/gft-laboratory/modules-shared.git?ref=main for aurora_cluster...
+- aurora_cluster in .terraform/modules/aurora_cluster/RDS-AuroraGlobal
+╷
+│ Error: No valid credential sources found
+│ 
+│ Please see https://www.terraform.io/docs/language/settings/backends/s3.html
+│ for more information about providing credentials.
+│ 
+│ Error: failed to refresh cached credentials, no EC2 IMDS role found,
+│ operation error ec2imds: GetMetadata, exceeded maximum number of attempts,
+│ 3, request send failed, Get
+│ "http://169.254.169.254/latest/meta-data/iam/security-credentials/": dial
+│ tcp 169.254.169.254:80: connect: connection refused
+```
+
+Significa que a role associada a EC2, não é possivel ser acessada pelo usuário local. Valide com o comando abaixo, acessando a EC2 e rodando o comando `curl http://169.254.169.254/latest/meta-data/iam/security-credentials/`
+
+E for exibido a informação  `curl: (7) Failed to connect to 169.254.169.254 port 80 after 0 ms: Could not connect to server
+
+Se faz necessário validar bloqueios locais da EC2.
+
+Execute:
+`sudo iptables -L -n` 
+O resultado for:
+<img width="1132" height="263" alt="image" src="https://github.com/user-attachments/assets/678d0fbb-2a0d-4d4f-8d61-9b72c062aa1c" />
+
+Significa que somente o 1001 e 1002 UID tem permissão para chamar o meta-data. O ssm-user que geralmente é o UID 1003 precisa dessa liberação, assim rode o comando:
+`sudo iptables -I OUTPUT -d 169.254.169.254 -m owner --uid-owner 1003 -j ACCEPT`
+
+O resultado será:
+```hcl
+ACCEPT  all  --  0.0.0.0/0  169.254.169.254  owner UID match 1003
+ACCEPT  tcp  --  0.0.0.0/0  169.254.169.254  owner UID match 1001
+ACCEPT  tcp  --  0.0.0.0/0  169.254.169.254  owner UID match 1002
+REJECT  tcp  --  0.0.0.0/0  169.254.169.254  ! owner UID match 0 reject-with icmp-port-unreachable
+```
+
+Assim teste novamente se a instancia consegue chamar o meta-data da própria EC2: `curl http://169.254.169.254/latest/meta-data/iam/security-credentials/` e o resultado esperado é:
+<img width="780" height="284" alt="image" src="https://github.com/user-attachments/assets/35da14ea-2d8c-477b-95dc-26dfe962ccca" />
+
+Pronto, problema de acesso a role resolvida.
+
+
 # ✅ Finalização
 Após seguir os passos acima, sua instância EC2 estará pronta para executar pipelines do GitHub Actions com Terraform.
