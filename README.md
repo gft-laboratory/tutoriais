@@ -68,7 +68,8 @@ terraform -version
 # 🤖 Instalação e Configuração do Agente do GitHub Actions
 Execute o script abaixo na instância EC2 para configurar o agente:
 
-Debian/Ubuntu (original):
+# Debian/Ubuntu:
+## Instalando Action Runnner no Debian/Ubuntu
 ```bash
 #!/bin/bash
 # ubuntu image
@@ -84,46 +85,65 @@ mkdir actions-runner && cd actions-runner
 # Verifique a versão mais recente: https://github.com/actions/runner/releases
 curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-linux-x64-2.326.0.tar.gz
 tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
-
-# Create the runner and start the configuration experience
-./config.sh --url https://github.com/gft-laboratory/modules-consumer --token ABCDEFGHIJKLMNOPQRSTUVWXYZ
+```
+## Configurando Action Runnner no Debian/Ubuntu
+```bash
+./config.sh \
+  --url https://github.com/gft-laboratory/modules-consumer \
+  --token ABCDEFGHIJKLMNOPQRSTUVWXYZ \
+  --name agent-gft-sdb \
+  --labels gft-hosted \
+  --unattended \
+  --replace
 nohup ./run.sh > log.txt 2>&1 &
 ```
-
-CentOS 7/8 ou Amazon Linux 2
+__
+# CentOS 7/8 ou Amazon Linux 2:
+## Instalando Action Runnner no CentOS 7/8 ou Amazon Linux 2
 ```bash
 #!/bin/bash
 # Amazon Linux 2 ou CentOS 7/8
 
-# Atualiza pacotes e instala dependências
+## Atualiza pacotes e instala dependências
 sudo yum update -y
 sudo yum install -y curl tar unzip
 
-# Instala o Amazon SSM Agent (caso ainda não esteja presente)
+## Instala o Amazon SSM Agent (caso ainda não esteja presente)
 sudo yum install -y amazon-ssm-agent
 sudo systemctl enable amazon-ssm-agent
 sudo systemctl start amazon-ssm-agent
 
-# Cria o diretório do GitHub Actions Runner
+## Cria o diretório do GitHub Actions Runner
 mkdir actions-runner && cd actions-runner
 
-# Baixa o runner (ajuste a versão conforme necessário)
-# Verifique a versão mais recente: https://github.com/actions/runner/releases
+## Baixa o runner (ajuste a versão conforme necessário)
+## Verifique a versão mais recente: https://github.com/actions/runner/releases
 curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.326.0/actions-runner-linux-x64-2.326.0.tar.gz
 
-# Extrai o conteúdo
+## Extrai o conteúdo
 tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
+```
 
-# Executa a configuração do runner (substitua o token conforme necessário)
-./config.sh --url https://github.com/gft-laboratory/modules-consumer --token ABCDEFGHIJKLMNOPQRSTUVWXYZ
+## Configurando Action Runnner no CentOS 7/8 ou Amazon Linux 2
+```bash
+## Executa a configuração do runner (substitua o token conforme necessário)
+./config.sh \
+  --url https://github.com/gft-laboratory/modules-consumer \
+  --token ABCDEFGHIJKLMNOPQRSTUVWXYZ \
+  --name agent-gft-sdb \
+  --labels gft-hosted \
+  --unattended \
+  --replace
+nohup ./run.sh > log.txt 2>&1 &
 
-# Inicia o runner em segundo plano
+## Inicia o runner em segundo plano
 nohup ./run.sh > log.txt 2>&1 &
 ```
+
 O token fornecido expira rapidamente. A configuração deve ser realizada em tempo real (4 mãos).
 
 
-### Amazon Linux 2 ou CentOS 7/8 - Tornando o ./run.sh auto-executável
+## Tornando o ./run.sh auto-executável
 ```hcl
 sudo vi /etc/systemd/system/myagent.service
 ```
@@ -159,8 +179,8 @@ systemctl status myagent.service
 
 
 
-# Troubleshooting
-## Amazon Linux 2 ou CentOS 7/8 - Erro por falta do pacote SDK
+# Troubleshooting - Amazon Linux 2 ou CentOS 7/8
+## Erro por falta do pacote SDK
 
 ```hcl
 sudo yum update -y
@@ -170,7 +190,7 @@ sudo yum install -y dotnet-sdk-6.0
 dotnet --version
 ```
 
-## Amazon Linux 2 ou CentOS 7/8 - Erro de curl: (7) Failed to connect to 169.254.169.254 port 80 after 0 ms: Could not connect to server
+## Erro de curl: (7) Failed to connect to 169.254.169.254 port 80 after 0 ms: Could not connect to server
 
 Se ao configurar uma pipeline, e o comando `terraform init`estiver emitindo o seguinte erro abaixo:
 ```hcl
