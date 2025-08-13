@@ -135,9 +135,6 @@ tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
   --unattended \
   --replace
 nohup ./run.sh > log.txt 2>&1 &
-
-## Inicia o runner em segundo plano
-nohup ./run.sh > log.txt 2>&1 &
 ```
 
 O token fornecido expira rapidamente. A configuração deve ser realizada em tempo real (4 mãos).
