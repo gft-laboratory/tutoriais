@@ -86,7 +86,7 @@ curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/ru
 tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
 
 # Create the runner and start the configuration experience
-./config.sh --url https://github.com/gft-laboratory/modules-consumer --token AEBICIZ2B5FHOADXKOV5VELIOAT66
+./config.sh --url https://github.com/gft-laboratory/modules-consumer --token ABCDEFGHIJKLMNOPQRSTUVWXYZ
 nohup ./run.sh > log.txt 2>&1 &
 ```
 
@@ -115,7 +115,7 @@ curl -o actions-runner-linux-x64-2.326.0.tar.gz -L https://github.com/actions/ru
 tar xzf ./actions-runner-linux-x64-2.326.0.tar.gz
 
 # Executa a configuração do runner (substitua o token conforme necessário)
-./config.sh --url https://github.com/gft-laboratory/modules-consumer --token AEBICIZ2B5FHOADXKOV5VELIOAT66
+./config.sh --url https://github.com/gft-laboratory/modules-consumer --token ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 # Inicia o runner em segundo plano
 nohup ./run.sh > log.txt 2>&1 &
